@@ -14,5 +14,5 @@ docker push vafrcor/complex-worker:$SHA
 
 kubectl apply -f k8s
 kubectl set image deployments/server-deployment server=vafrcor/complex-server:$SHA
-kubectl set image deployments/client-deployment server=vafrcor/complex-client:$SHA
-kubectl set image deployments/worker-deployment server=vafrcor/complex-worker:$SHA
+kubectl set image deployments/client-deployment client=vafrcor/complex-client:$SHA
+kubectl set image deployments/worker-deployment worker=vafrcor/complex-worker:$SHA
