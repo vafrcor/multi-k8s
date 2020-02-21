@@ -1,0 +1,21 @@
+{
+  "name": "complex-worker",
+  "version": "1.0.0",
+  "description": "Worker Complex ",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start-with-dotenv": "node  -r dotenv/config index.js dotenv_config_path=../.env",
+    "dev": "nodemon -L"
+  },
+  "keywords": [
+    "worker"
+  ],
+  "author": "Vinsensius Angelo",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "2.0.2",
+    "redis": "2.8.0"
+  }
+}
