@@ -7,39 +7,31 @@ branches:
 services:
   - docker
 
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
 before_install:
   - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
   - curl https://sdk.cloud.google.com | bash > /dev/null;
   - source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud components update kubectl
   - gcloud auth activate-service-account --key-file service-account.json
-  - docker build -t vafrcor/complex-client-test -f ./client/Dockerfile.dev ./client  
-
-script:
-  - docker run -e CI=true vafrcor/complex-client-test npm run test -- --coverage
-
-after_success:
-  - docker build -t vafrcor/complex-client ./client
-  - docker build -t vafrcor/complex-nginx ./nginx
-  - docker build -t vafrcor/complex-server ./server
-  - docker build -t vafrcor/complex-worker ./worker
+  - gcloud config set project multi-k8s-268901
+  - gcloud config set compute/zone us-central1-a
+  - gcloud container clusters get-credentials multi-cluster 
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  - docker push vafrcor/complex-client
-  - docker push vafrcor/complex-nginx
-  - docker push vafrcor/complex-server
-  - docker push vafrcor/complex-worker
+  # Build test image
+  - docker build -t vafrcor/complex-client-test -f ./client/Dockerfile.dev ./client
+
+script:
+  # Run test image
+  - docker run -e CI=true vafrcor/complex-client-test npm run test -- --coverage
 
 deploy:
-  edge: true
-  on: 
+  provider: script
+  script: bash ./deploy.sh
+  on:
     branch: master
-  provider: elasticbeanstalk
-  region: "us-east-2"
-  app: "multi-docker"
-  env: "MultiDocker-env"
-  bucket_name: "elasticbeanstalk-us-east-2-130518357428"
-  bucket_path: "multi-docker-deployer"
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: 
-    secure: "$AWS_SECRET_KEY"
