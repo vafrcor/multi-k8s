@@ -7,14 +7,14 @@ spec:
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
-    commonName: tsts.tsts
-    dnsNames:
-      - tsts.site
-      - www.tsts.site 
-    acme:
-      config:
-        - http01:
-            ingressClass: nginx
-          domains:
-            - tsts.site
-            - www.tsts.site
+  commonName: tsts.site
+  dnsNames:
+    - tsts.site
+    - www.tsts.site 
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          - tsts.site
+          - www.tsts.site

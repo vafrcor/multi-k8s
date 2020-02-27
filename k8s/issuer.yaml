@@ -9,6 +9,8 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
-      - http01:
+      # An empty 'selector' means that this solver matches all domains
+      - selector: {}
+        http01:
           ingress:
             class: nginx
